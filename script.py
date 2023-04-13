@@ -28,9 +28,10 @@ sent_messages = set()  # Keep track of file_ids that have been sent
 
 async def upload():
     global sent_messages
-    for message in messages_to_send:
+    messages_to_send = []
+    for item in collection.find():
         # Extract the file ID from the message's media
-        media = message.get('media', None)
+        media = item.get('media', None)
         if media:
             file_id = media.get('file_id', None)
         else:
@@ -38,18 +39,21 @@ async def upload():
 
         # Use the file ID to check for duplicates
         if file_id and file_id not in sent_messages:
-            try:
-                await client.send_message(channel_name, f"Data from MongoDB: {message}")
-                sent_messages.add(file_id)
-            except errors.FloodWaitError as e:
-                print(f"Got FloodWaitError. Sleeping for {e.seconds} seconds.")
-                time.sleep(e.seconds)
-            except errors.ConnectionError as e:
-                print(f"Got ConnectionError: {e}. Retrying in 5 seconds...")
-                time.sleep(5)
-                print('File uploaded successfully!')
-        else:
-                print('No files found to upload.')
+            messages_to_send.append(item)
+            sent_messages.add(file_id)
+
+    if messages_to_send:
+        try:
+            await client.send_messages(channel_name, messages_to_send)
+            print('All messages uploaded successfully!')
+        except errors.FloodWaitError as e:
+            print(f"Got FloodWaitError. Sleeping for {e.seconds} seconds.")
+            time.sleep(e.seconds)
+        except errors.ConnectionError as e:
+            print(f"Got ConnectionError: {e}. Retrying in 5 seconds...")
+            time.sleep(5)
+    else:
+        print('No new files found to upload.')
 
 async def main(command=None):
     if command == 'upload':
