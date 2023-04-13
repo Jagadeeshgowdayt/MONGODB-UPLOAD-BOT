@@ -25,7 +25,8 @@ client = TelegramClient('session_name', api_id, api_hash).start(bot_token=bot_to
 BATCH_SIZE = 100  # Number of messages to send in each batch
 sent_messages = set()  # Keep track of file_ids that have been sent
 
-async def send_messages(messages_to_send):
+
+async def upload():
     global sent_messages
     for message in messages_to_send:
         # Extract the file ID from the message's media
@@ -46,21 +47,9 @@ async def send_messages(messages_to_send):
             except errors.ConnectionError as e:
                 print(f"Got ConnectionError: {e}. Retrying in 5 seconds...")
                 time.sleep(5)
-
-async def upload():
-    # Connect to MongoDB
-    client = pymongo.MongoClient(os.environ.get('MONGODB_URI'))
-    db = client.get_default_database()
-    collection = db['uploads']
-
-    # Get the latest file and send it to the Telegram channel
-    file = collection.find_one(sort=[('upload_date', pymongo.DESCENDING)])
-    if file:
-        input_peer = await client.get_input_entity(channel_name)
-        await client.send_document(input_peer, document=file['file_id'])
-        print('File uploaded successfully!')
-    else:
-        print('No files found to upload.')
+                print('File uploaded successfully!')
+        else:
+                print('No files found to upload.')
 
 async def main(command=None):
     if command == 'upload':
