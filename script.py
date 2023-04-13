@@ -55,13 +55,38 @@ async def upload():
     else:
         print('No new files found to upload.')
 
+
+async def send_messages(messages_to_send):
+    try:
+        input_channel = await client.get_input_entity(channel_name)
+        await client.send_messages(input_channel, messages_to_send)
+        print(f"Sent {len(messages_to_send)} messages")
+    except errors.FloodWaitError as e:
+        print(f"Got FloodWaitError. Sleeping for {e.seconds} seconds.")
+        time.sleep(e.seconds)
+    except errors.ConnectionError as e:
+        print(f"Got ConnectionError: {e}. Retrying in 5 seconds...")
+        time.sleep(5)
+
+
 async def main(command=None):
     if command == 'upload':
         await upload()
     else:
         messages_to_send = []
         for item in collection.find():
-            messages_to_send.append(item)
+            # Extract the file ID from the message's media
+            media = item.get('media', None)
+            if media:
+                file_id = media.get('file_id', None)
+            else:
+                file_id = None
+
+            # Use the file ID to check for duplicates
+            if file_id and file_id not in sent_messages:
+                messages_to_send.append(item)
+                sent_messages.add(file_id)
+
             if len(messages_to_send) >= BATCH_SIZE:
                 await send_messages(messages_to_send)
                 messages_to_send = []
@@ -70,6 +95,7 @@ async def main(command=None):
         # Send any remaining messages
         if messages_to_send:
             await send_messages(messages_to_send)
+
 
 async def run():
     while True:
