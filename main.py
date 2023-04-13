@@ -63,7 +63,7 @@ bot_token = os.environ.get('BOT_TOKEN')
 updater = Updater(bot_token)
 updater.dispatcher.add_handler(CommandHandler('setdatabase', set_database))
 updater.dispatcher.add_handler(CommandHandler('upload', upload))
-updates.dispatcher.add_handler(commandHandler('setchannel',set_channel))
+updater.dispatcher.add_handler(commandHandler('setchannel',set_channel))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 # Start the bot
 updater.start_polling()
