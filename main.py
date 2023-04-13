@@ -11,7 +11,7 @@ from telethon.errors.rpcerrorlist import PeerIdInvalid
 def start(update, context):
     # Set the start message with an image
     start_message = "Welcome to 🥭 MANGO UPLOAD BOT!\n\nThis bot can upload files from MongoDB to your Telegram channel."
-    start_message += "<a href='https://telegra.ph/MANGO-UPLOAD-BOT-04-13'><img src='https://telegra.ph/file/4a02cbfb67fa3f3dc7f1c.jpg'></a>"
+    start_message += "<a href='https://graph.org/file/e84a8eb7963642ddd2968.jpg'><img src='https://graph.org/file/c88b50dc9274946ad47ca.jpg'></a>"
     context.bot.send_message(chat_id=update.effective_chat.id, text=start_message, parse_mode=ParseMode.HTML)
 
 
@@ -63,7 +63,7 @@ bot_token = os.environ.get('BOT_TOKEN')
 updater = Updater(bot_token)
 updater.dispatcher.add_handler(CommandHandler('setdatabase', set_database))
 updater.dispatcher.add_handler(CommandHandler('upload', upload))
-updates.dispatchee.add_handler(commandHandler('setchannel',set_channel))
+updates.dispatcher.add_handler(commandHandler('setchannel',set_channel))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 # Start the bot
 updater.start_polling()
