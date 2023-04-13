@@ -1,0 +1,59 @@
+{
+  "name": "MongoDB-Upload-Bot",
+  "description": "A Telegram bot that uploads files to MongoDB and sends them to a Telegram channel.",
+  "repository": "https://github.com/Bharathboy/MONGODB-UPLOAD-BOT",
+  "logo": "https://i.imgur.com/KRYp5RG.png",
+  "keywords": ["telegram", "bot", "mongodb", "upload"],
+  "env": {
+    "BOT_TOKEN": {
+      "description": "Telegram Bot Token",
+      "required": true
+    },
+    "CHANNEL_NAME": {
+      "description": "Telegram Channel Name",
+      "required": true
+    },
+    "MONGODB_URI": {
+      "description": "MongoDB URI",
+      "required": true
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "12"
+      }
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-apt"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "python setup.py"
+  },
+  "deploy": {
+    "provider": {
+      "name": "heroku",
+      "button": {
+        "label": "Deploy to Heroku",
+        "env": {
+          "BOT_TOKEN": {
+            "description": "Telegram Bot Token"
+          },
+          "CHANNEL_NAME": {
+            "description": "Telegram Channel Name"
+          },
+          "MONGODB_URI": {
+            "description": "MongoDB URI"
+          }
+        }
+      }
+    }
+  }
+}
