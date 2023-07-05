@@ -12,7 +12,7 @@ from telethon.tl.types import InputPeerChannel
 mongo_uri = os.environ.get('MONGODB_URI')
 client = pymongo.MongoClient(mongo_uri)
 db = client.get_default_database()
-collection = db['mycollection']
+collection = db['jagadeesh']
 
 # Set up Telegram client
 bot_token = os.environ.get('BOT_TOKEN')
